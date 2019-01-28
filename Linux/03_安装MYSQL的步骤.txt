@@ -1,0 +1,112 @@
+在/soft/目录下有mysql这个软件
+
+查询当前Linux系统中是否存在mysql文件
+01_rpm -qa | grep mysql
+
+
+删除系统中原有的mysql文件
+02_rpm -e --nodeps mysql-libs-5.1.71-1.el6.i686
+
+
+进入/usr/local目录
+03_cd /usr/local
+
+
+创建mysql目录
+04_mkdir mysql
+
+
+进入/soft目录
+05_cd /soft
+
+
+将mysql打包文件解压到/usr/local/mysql目录下
+06_tar -xvf MySQL-5.6.22-1.el6.i686.rpm-bundle.tar -C/usr/local/mysql
+
+
+进入/usr/local/mysql目录
+07_cd /usr/local/mysql
+
+
+***************************************************************************************************
+
+
+安装MySQL服务端软件
+08_rpm -ivh MySQL-server-5.6.22-1.el6.i686.rpm
+
+
+安装MySQL客户端软件
+09_rpm -ivh MySQL-client-5.6.22-1.el6.i686.rpm
+
+
+启动MySQL服务
+10_service mysql start
+
+查询MySQL的登陆密码
+11_more /root/.mysql_secret
+
+进入MySQL（在MySQL中执行）
+12_mysql -uroot -p
+   password: 9y3ZSs_PwERYOZjo
+   当出现mysql>提标符，表示进入mysql平台
+
+进入MySQL并修改MySQL登陆密码，在MySQL中输入,登陆密码为123（在MySQL中执行）
+13_set password = password('123');
+用户名:root
+密码：123
+
+创建一个库：bookdb
+创建一张表：t_user
+插入三条记录：
+
+
+***************************************************************************************************
+
+
+将MySQL服务加入到Linux系统中
+14_chkconfig --add mysql
+
+
+Linux启动时也启动MySQL服务
+15_chkconfig mysql on
+
+
+进入MySQL并设置开启远程登录Mysql的权限，在MySQL中输入（在MySQL中执行）
+root是超级管理员，123是超级管理员的密码
+16_grant all privileges on *.* to 'root' @'%' identified by '123';
+
+
+进入MySQL并让权限生效（在MySQL中执行）
+17_flush privileges;
+
+
+开放linux的对外访问的端口3306，在Linux中输入命令，在Linux环境中执行
+18_/sbin/iptables -I INPUT -p tcp --dport 3306 -j ACCEPT
+
+
+将开放linux的对外访问的端口3306写入防火墙
+19_/etc/rc.d/init.d/iptables save
+
+
+
+
+
+***************************************************************************************************
+注意：
+如果出现：Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock'提示？
+
+解决：
+cd /
+cd etc/sysconfig
+vim selinux
+修改里面的配置文件SELINUX=enforcing改为SELINUX=disabled
+最后重启Linux：reboot
+***************************************************************************************************
+
+
+
+
+
+
+
+
