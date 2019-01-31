@@ -1,0 +1,26 @@
+例子
+SELECT ta.avatar,ta.nick,(cbAnchor.zbAnchor+cbAnchor.giftAnchor) totalIncome,cbAnchor.giftAnchor,cbAnchor.zbAnchor,ch.totalNumber,ch.receiveNumber,ch.totalTime,cbAnchor.sociatyIncome FROM (
+SELECT 
+SUM(CASE cbAnchor.type WHEN 6 THEN cbAnchor.amount ELSE 0 END) zbAnchor,
+SUM(CASE cbAnchor.type WHEN 1 THEN cbAnchor.amount ELSE 0 END) giftAnchor,
+( SUM(CASE cbUser.type WHEN 6 THEN cbUser.amount ELSE 0 END)  + SUM(CASE cbUser.type WHEN 1 THEN cbUser.amount ELSE 0 END) ) * 0.1 sociatyIncome,
+ cbAnchor.accountId
+ FROM cast_bill cbAnchor INNER JOIN cast_bill cbUser ON cbUser.ids = cbAnchor.ids AND cbAnchor.amount != cbUser.amount WHERE (cbAnchor.type = 1 OR cbAnchor.type = 6) AND cbAnchor.`amount` >= 0
+ GROUP BY cbAnchor.accountId
+) cbAnchor INNER JOIN tb_account ta ON ta.id = cbAnchor.accountId 
+ LEFT JOIN (
+ SELECT COUNT(id) totalNumber,SUM(CASE IFNULL(anchorPushUrl,'0') WHEN '0' THEN 0 ELSE 1 END) receiveNumber,(SUM(endTime)-SUM(CASE IFNULL(endTime,'0') WHEN '0' THEN 0 ELSE startTime END)) totalTime,toAccountId FROM cast_history GROUP BY toAccountId 
+) ch ON ch.toAccountId = ta.id
+
+
+如果cbAnchor.type的值为6则显示cbAnchor.amount,否则显示0
+(CASE cbAnchor.type WHEN 6 THEN cbAnchor.amount ELSE 0 END)
+//如果为空则显示0
+IFNULL(anchorPushUrl,'0')
+(CASE IFNULL(anchorPushUrl,'0') WHEN '0' THEN 0 ELSE 1 END)
+
+
+根据条件更新同一个字段设置不同的值
+
+UPDATE social_topic SET fz = (CASE WHEN createTime > '2018-04-13 13:00:27' THEN 2 ELSE 0 END )
+ WHERE userId = 57 AND fz != 1
