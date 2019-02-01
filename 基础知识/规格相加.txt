@@ -1,0 +1,85 @@
+
+	
+	public static void main(String[] args) {
+		List<User> list = new ArrayList<>();
+		add(list);
+		List<String> strList = new ArrayList<>();
+		strAdd(strList, list, 0);
+		String [] s = strList.toString().split(",");
+		for (String string : s) {
+			System.out.println(string);
+		}
+	}
+
+	public static void strAdd(List<String> strList,List<User> list,int i) {
+		User user = list.get(i);
+		List <User> nameList = user.get("list");
+		for (User name : nameList) {
+//			StringBuilder s = new StringBuilder(user.get("value") + " : " + name.get("name").toString());
+			String s = user.get("value") + " : " + name.get("name").toString();
+			int y = i;
+			strAdd2(list,strList, ++y, s);
+		}
+	}
+	public static void strAdd2(List<User> list,List<String> strList,int i,String s2) {
+		if(i >= list.size()) {
+			strList.add(s2.toString());
+			return;
+		}
+		User user = list.get(i);
+		List <User> nameList = user.get("list");
+		for (User name : nameList) {
+			int y = i;
+			String s = s2.toString();
+			s += " "+user.get("value") + " : " + name.get("name").toString();
+			strAdd2(list, strList, ++y, s);
+		}
+	}
+	
+	private static void add(List<User> list) {
+
+		List<User> list1 = new ArrayList<>();
+		List<User> list2 = new ArrayList<>();
+		List<User> list3 = new ArrayList<>();
+		User user1 = new User();
+		User user2 = new User();
+		User user3 = new User();
+		user1.put("value","颜色");
+		
+		user2.put("name","红色");
+		user3.put("name","绿色");
+		list1.add(user2);
+		list1.add(user3);
+		user1.put("list",list1);
+		
+		User user4 = new User();
+		User user5 = new User();
+		User user6 = new User();
+		user4.put("value","尺码");
+		
+		user5.put("name","1");
+		user6.put("name","2");
+		list2.add(user5);
+		list2.add(user6);
+		user4.put("list", list2);
+
+		User user7 = new User();
+		User user8 = new User();
+		User user9 = new User();
+		User user10 = new User();
+
+		user7.put("value","面料");
+		
+		user8.put("name","纯棉");
+		user9.put("name","涤纶");
+		user10.put("name","海绵");
+		list3.add(user8);
+		list3.add(user9);
+		list3.add(user10);
+		user7.put("list",list3);
+
+		list.add(user1);
+		list.add(user4);
+		list.add(user7);
+		
+	}
