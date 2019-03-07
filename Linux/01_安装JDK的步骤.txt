@@ -24,7 +24,7 @@
 05_vim /etc/profile
    在文件最后空一行，写入如下代码：
   	#set java environment
-	JAVA_HOME=/usr/local/jdk1.7.0_71
+	JAVA_HOME=/usr/local/jdk1.8.0_181
 	CLASSPATH=.:$JAVA_HOME/lib/tools.jar
 	PATH=$JAVA_HOME/bin:$PATH
 	export JAVA_HOME CLASSPATH PATH 
@@ -40,11 +40,7 @@
 07_java -version 
    1.7.0_71
 
-#set java environment
-JAVA_HOME=/usr/local/jdk1.8.0_181
-CLASSPATH=.:$JAVA_HOME/lib/tools.jar
-PATH=$JAVA_HOME/bin:$PATH
-export JAVA_HOME CLASSPATH PATH 
+ 
 
 
 
