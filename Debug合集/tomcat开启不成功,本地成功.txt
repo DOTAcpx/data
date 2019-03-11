@@ -1,0 +1,4 @@
+项目在本地开启成功,之后部署上tomcat访问不到
+报错
+At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time
+说明tomcat中的jar包和项目的冲突,启动失败,删除之后即可
