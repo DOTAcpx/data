@@ -24,3 +24,11 @@ IFNULL(anchorPushUrl,'0')
 
 UPDATE social_topic SET fz = (CASE WHEN createTime > '2018-04-13 13:00:27' THEN 2 ELSE 0 END )
  WHERE userId = 57 AND fz != 1
+
+ 
+计算两个日期的时间差
+关键字:TIMESTAMPDIFF
+单位间隔类型有FRAC_SECOND 表示间隔是毫秒,SECOND 秒,MINUTE 分钟,HOUR 小时,DAY 天,WEEK 星期,MONTH 月,QUARTER 季度,YEAR 年
+NOW() - createTime 得出的结果转换为 单位
+TIMESTAMPDIFF(DAY,createTime,NOW())
+
