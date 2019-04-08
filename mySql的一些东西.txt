@@ -32,3 +32,21 @@ UPDATE social_topic SET fz = (CASE WHEN createTime > '2018-04-13 13:00:27' THEN 
 NOW() - createTime 得出的结果转换为 单位
 TIMESTAMPDIFF(DAY,createTime,NOW())
 
+今天
+select * from 表名 where to_days(时间字段名) = to_days(now());
+
+昨天
+SELECT * FROM 表名 WHERE TO_DAYS( NOW( ) ) - TO_DAYS( 时间字段名) <= 1
+
+7天
+SELECT * FROM 表名 where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(时间字段名)
+
+近30天
+SELECT * FROM 表名 where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(时间字段名)
+
+本月
+SELECT * FROM 表名 WHERE DATE_FORMAT( 时间字段名, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+
+上一月
+SELECT * FROM 表名 WHERE PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( 时间字段名, '%Y%m' ) ) =1
+
