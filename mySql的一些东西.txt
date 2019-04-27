@@ -50,3 +50,7 @@ SELECT * FROM 表名 WHERE DATE_FORMAT( 时间字段名, '%Y%m' ) = DATE_FORMAT(
 上一月
 SELECT * FROM 表名 WHERE PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( 时间字段名, '%Y%m' ) ) =1
 
+设置链接数上限
+#SHOW VARIABLES LIKE 'max_connections';(查可以看当前的最大连接数)
+#SET GLOBAL max_connections=1000;(设置最大连接数为1000，可以再次查看是否设置成功)
+
