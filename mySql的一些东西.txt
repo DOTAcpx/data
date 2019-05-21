@@ -12,6 +12,10 @@ SUM(CASE cbAnchor.type WHEN 1 THEN cbAnchor.amount ELSE 0 END) giftAnchor,
  SELECT COUNT(id) totalNumber,SUM(CASE IFNULL(anchorPushUrl,'0') WHEN '0' THEN 0 ELSE 1 END) receiveNumber,(SUM(endTime)-SUM(CASE IFNULL(endTime,'0') WHEN '0' THEN 0 ELSE startTime END)) totalTime,toAccountId FROM cast_history GROUP BY toAccountId 
 ) ch ON ch.toAccountId = ta.id
 
+SELECT SUM(CASE WHEN state =0 THEN 1 ELSE 0 END) AS state0,
+SUM(CASE WHEN state =2 THEN 1 ELSE 0 END) AS state1,
+SUM(CASE WHEN state =7 THEN 1 ELSE 0 END) AS state2
+ FROM shop_order WHERE accountId = 119
 
 如果cbAnchor.type的值为6则显示cbAnchor.amount,否则显示0
 (CASE cbAnchor.type WHEN 6 THEN cbAnchor.amount ELSE 0 END)

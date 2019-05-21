@@ -31,15 +31,15 @@ CentOS7安装Nginx 1.7.4
 CentOS6安装Nginx
 1.下载nginx
 　　方法一
-　　wget http://nginx.org/download/nginx-1.11.6.tar.gz
+　　wget http://nginx.org/download/nginx-1.15.12.tar.gz
 　　方法二
 　　http://nginx.org/en/download.html在Nginx官网手动下载
 
 2.解压nginx的gz包
-　　tar -zxvf nginx-1.11.6.tar.gz    这里我选择安装在/usr/local/目录
+　　tar -zxvf nginx-1.15.12.tar.gz    这里我选择安装在/usr/local/目录
 
 3.初始化配置
-　　cd /usr/local/nginx-1.11.6切换到nginx安装目录
+　　cd /usr/local/nginx-1.15.12切换到nginx安装目录
 
 　　运行./configure进行初始化配置,这里发现下面这个错误,如果出现这个错误,说明该机器没有安装PCRE，而nginx需要依赖PCRE.
 
