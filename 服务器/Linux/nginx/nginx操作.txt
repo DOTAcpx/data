@@ -1,0 +1,90 @@
+CentOS7安装Nginx 1.7.4
+
+ 一、安装准备
+首先由于nginx的一些模块依赖一些lib库，所以在安装nginx之前，必须先安装这些lib库，这些依赖库主要有g++、gcc、openssl-devel、pcre-devel和zlib-devel 所以执行如下命令安装
+    $   yum install gcc-c++  
+    $   yum install pcre pcre-devel  
+    $   yum install zlib zlib-devel  
+    $   yum install openssl openssl--devel  
+二、安装Nginx
+安装之前，最好检查一下是否已经安装有nginx
+    $   find -name nginx  
+如果系统已经安装了nginx，那么就先卸载
+    $   yum remove nginx  
+首先进入/usr/local目录
+    $   cd /usr/local  
+从官网下载最新版的nginx
+    $   wget http://nginx.org/download/nginx-1.7.4.tar.gz  
+解压nginx压缩包
+    $   tar -zxvf nginx-1.7.4.tar.gz  
+会产生一个nginx-1.7.4 目录，这时进入nginx-1.7.4目录
+    $   cd  nginx-1.7.4  
+接下来安装，使用--prefix参数指定nginx安装的目录,make、make install安装
+    $   ./configure  $默认安装在/usr/local/nginx   
+    $   make  
+    $   make install     
+如果没有报错，顺利完成后，最好看一下nginx的安装目录
+    $   whereis nginx  
+安装完毕后，进入安装后目录（/usr/local/nginx）便可以启动或停止它了。
+
+
+CentOS6安装Nginx
+1.下载nginx
+　　方法一
+　　wget http://nginx.org/download/nginx-1.15.12.tar.gz
+　　方法二
+　　http://nginx.org/en/download.html在Nginx官网手动下载
+
+2.解压nginx的gz包
+　　tar -zxvf nginx-1.15.12.tar.gz    这里我选择安装在/usr/local/目录
+
+3.初始化配置
+　　cd /usr/local/nginx-1.15.12切换到nginx安装目录
+
+　　运行./configure进行初始化配置,这里发现下面这个错误,如果出现这个错误,说明该机器没有安装PCRE，而nginx需要依赖PCRE.
+
+ 　　安装PCRE:  yum -y install pcre-devel, 安装完成后再执行./configure, 结果又发现一个新的错误, 说还需要zlib library
+
+ 　　安装zlib:  yum install -y zlib-devel, 提示Complete!表示安装成功了,继续执行./configure 执行完成后会提示下面信息表示初始化配置成功了.
+
+　　提示信息中的nginx binary file: "usr/local/nginx/sbin/nginx" 这个路径在第4步执行编译操作后会生成的nginx的启动目录
+4.运行 make install 进行编译
+　　编译完成后会发生成了/usr/local/nginx/目录
+5.启动nginx
+　　cd /usr/local/nginx/sbin
+　　执行./nginx
+
+启动nginx 
+搜索出nginx目录
+
+find / -name nginx 
+
+假设搜索出的目录为 /usr/local/nginx/sbin/nginx
+进入搜索出来的nginx目录并且进入
+
+cd /usr/local/nginx/sbin/nginx
+启动指令 
+./nginx  
+重启指令
+./nginx -s reload
+关闭指令
+./nginx -s stop
+
+简单配置 nginx.conf 文件
+find / -name nginx.conf
+假设搜索出的目录为 /usr/local/nginx/conf/nginx.conf
+vim /usr/local/nginx/conf/nginx.conf
+
+配置nginx.conf
+//配置跳转页面的ip加端口
+upstream tomcatServer{
+	server localhost:8080;
+}
+
+server{
+	listen  80;//配置nginx端口80
+	server_name  localhost;//域名
+	location / {
+		proxy_pass http://tomcatServer;//跳转路径
+	}
+}

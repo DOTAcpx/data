@@ -1,0 +1,56 @@
+在/soft/目录下有tomcat这个软件
+
+进入soft目录
+01_cd /soft
+
+
+将soft目录下的apache-tomcat-8.5.34.tar.gz压缩软件解压到/usr/local目录下
+02_tar -xvf apache-tomcat-8.5.34.tar.gz
+
+
+去/usr/local下看一下
+
+开放linux的对外访问的端口80，在默认情况下，Linux不会开发端口号
+03_/sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+
+
+
+将开放linux的对外访问的端口8080写入防火墙
+04_/etc/rc.d/init.d/iptables save
+
+
+进入apache-tomcat-7.0.57/bin目录
+05_cd /usr/local/apache-tomcat-7.0.57/bin
+
+
+执行当前目录下的startup.sh文件，来启动Tomcat
+06_./startup.sh
+
+
+打开浏览器，输入如下IP进行测试
+07_http://192.168.188.128:8080
+这个IP是虚拟机的IP
+
+
+执行当前目录下的shutdown.sh文件，来停止Tomcat
+08_./shutdown.sh
+
+
+打开浏览器，输入如下IP进行测试
+09_http://192.168.188.128:8080
+
+如果无法访问
+问题就出在虚拟机的防火墙，使用service iptables stop 关掉防火墙就可以在浏览器访问了。
+
+
+
+开启tomcat报添加
+Unable to set localhost. This prevents creation of a GUID.
+ Cause was: iZwz9ezkmfgg9qu64vv5rpZ: iZwz9ezkmfgg9qu64vv5rpZ: Name or service not known
+
+则
+vim /etc/hosts
+在127.0.0.1的后面添加
+iZwz9fr33mjfxgz8yd06i0Z
+
+

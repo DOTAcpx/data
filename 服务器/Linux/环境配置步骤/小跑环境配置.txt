@@ -1,0 +1,242 @@
+--------------mysql-----------------
+linux CentOS6.5 yum安装mysql 5.6
+
+1.新开的云服务器，需要检测系统是否自带安装mysql
+查找老版本mysql相关的安装目录命令：find / -name mysql
+[root@test ~]# find / -name mysql
+若查找到相关目录使用命令：rm -rf {目录名}
+
+进入/etc/目录查看mysql的配置文件my.cnf是否存在，若存在则使用命令：rm –f my.cnf 进行删除。
+
+最后使用命令：rpm -qa|grep -i mysql 重新检查一般系统中是否安装mysql。
+
+当然会出现很多问题，最常见的就是卸载mysql-libs-5.1.71-1.el6.x86_64 会发现postfix-2:2.6.6-2.2.el6_1.x86_64被依赖，
+
+不用担心，用下面这个命令就OK啦
+
+rpm -ev mysql-libs-5.1.71-1.el6.x86_64 如果这句没用，则运行下面的这句
+rpm -e --nodeps mysql-libs-5.1.71-1.el6.x86_64，
+
+# yum list installed | grep mysql
+2.如果发现有系统自带mysql，果断这么干
+
+# yum -y remove mysql-libs.x86_64
+3.随便在你存放文件的目录下执行，这里解释一下，由于这个mysql的yum源服务器在国外，所以下载速度会比较慢，还好mysql5.6只有79M大，而mysql5.7就有182M了，所以这是我不想安装mysql5.7的原因
+
+# wget http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm
+4.接着执行这句,解释一下，这个rpm还不是mysql的安装文件，只是两个yum源文件，执行后，在/etc/yum.repos.d/ 这个目录下多出mysql-community-source.repo和mysql-community.repo
+
+# rpm -ivh mysql-community-release-el6-5.noarch.rpm
+5.这个时候，可以用yum repolist mysql这个命令查看一下是否已经有mysql可安装文件
+
+#yum repolist all | grep mysql
+6.安装mysql 服务器命令（一路yes）：
+
+# yum install mysql-community-server
+7.安装成功后
+需要等待一会
+# service mysqld start
+
+# chkconfig --list | grep mysqld
+# chkconfig mysqld on
+
+10.mysql安全设置(系统会一路问你几个问题，看不懂复制之后翻译，基本上一路yes)：
+# mysql_secure_installation
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MySQL
+
+SERVERS IN PRODUCTION USE! PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MySQL to secure it, we'll need the current
+
+password for the root user. If you've just installed MySQL, and
+
+you haven't set the root password yet, the password will be blank,
+
+so you should just press enter here.
+
+Enter current password for root (enter for none):<–初次运行直接回车
+
+OK, successfully used password, moving on…
+
+Setting the root password ensures that nobody can log into the MySQL
+
+root user without the proper authorisation.
+
+Set root password? [Y/n] <– 是否设置root用户密码，输入y并回车或直接回车
+
+New password: <– 设置root用户的密码
+
+Re-enter new password: <– 再输入一次你设置的密码
+
+Password updated successfully!
+
+Reloading privilege tables..
+
+… Success!
+
+By default, a MySQL installation has an anonymous user, allowing anyone
+
+to log into MySQL without having to have a user account created for
+
+them. This is intended only for testing, and to make the installation
+
+go a bit smoother. You should remove them before moving into a
+
+production environment.
+
+Remove anonymous users? [Y/n] <– 是否删除匿名用户,生产环境建议删除，所以直接回车
+
+… Success!
+
+Normally, root should only be allowed to connect from 'localhost'. This
+
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n] <–是否禁止root远程登录,根据自己的需求选择Y/n并回车,建议禁止 输入n
+
+… Success!
+
+By default, MySQL comes with a database named 'test' that anyone can
+
+access. This is also intended only for testing, and should be removed
+
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n] <– 是否删除test数据库,直接回车
+
+- Dropping test database…
+
+… Success!
+
+- Removing privileges on test database…
+
+… Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+
+will take effect immediately.
+
+Reload privilege tables now? [Y/n] <– 是否重新加载权限表，直接回车
+
+… Success!
+
+Cleaning up…
+
+All done! If you've completed all of the above steps, your MySQL
+
+installation should now be secure.
+
+Thanks for using MySQL!
+
+
+开放远程连接首先进入mysql数据库，然后输入下面两个命令：
+#mysql -uroot -p 
+#密码
+#grant all privileges on *.* to 'root'@'%' identified by '密码' with grant option;
+#flush privileges;
+第一个*是数据库，可以改成允许访问的数据库名称
+第二个 是数据库的表名称，代表允许访问任意的表
+root代表远程登录使用的用户名，可以自定义
+%代表允许任意ip登录，如果你想指定特定的IP，可以把%替换掉就可以了
+password代表远程登录时使用的密码，可以自定义
+flush privileges;这是让权限立即生效
+
+9.查看mysql是否自启动,并且设置开启自启动命令
+#exit
+
+
+--------------JDK1.8-----------------
+
+查看当前linux系统是否已经安装java软件
+01_rpm -qa | grep java
+如果linux环境下没有安装过jdk,则直接执行下面步骤,如果有自行百度删除
+
+转到/local
+03_ #cd /usr/local
+放入jdk-8u181-linux-x64.tar.gz文件
+
+解压jdk到/usr/local下，/usr/local这里主要存放那些手动安装的软件
+04_ #tar -xvf jdk-8u181-linux-x64.tar.gz
+
+编辑/etc/profile配置文件
+05_ #vim /etc/profile
+在文件最后空一行，写入如下代码：
+#set java environment
+JAVA_HOME=/usr/local/jdk1.8.0_181
+CLASSPATH=.:$JAVA_HOME/lib/tools.jar
+PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME CLASSPATH PATH 
+
+重新加载/etc/profile配置文件
+06_ #source /etc/profile
+
+测试JDK是否安装成功
+07_java 
+   不能有乱码
+07_java -version 
+   1.8.0_181
+
+----------------TOMCAT8.5-----------------
+进入local目录
+01_ #cd /usr/local
+
+将local目录下的apache-tomcat-8.5.34.tar.gz压缩软件解压到/usr/local目录下
+02_ #tar -xvf apache-tomcat-8.5.34.tar.gz
+
+
+03_开放linux的对外访问的端口8080，在默认情况下，Linux不会开发端口号
+#/sbin/iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+
+将开放linux的对外访问的端口8080写入防火墙
+04_ #/etc/rc.d/init.d/iptables save
+
+如果是开放的是80端口则改为80,还需要更改server.xml配置文件
+直接拿server.xml覆盖 /usr/local/apache-tomcat-8.5.34/conf 下的server.xml
+
+05_进入apache-tomcat-8.5.34.tar.gz目录
+#cd /usr/local/apache-tomcat-8.5.34/bin
+
+执行当前目录下的startup.sh文件，来启动Tomcat
+06_./startup.sh
+
+打开浏览器，输入如下IP进行测试
+07_http://192.168.188.128:8080
+这个IP是服务器机的IP
+
+执行当前目录下的shutdown.sh文件，来停止Tomcat
+08_./shutdown.sh
+
+-----------------redis-------------------
+1.进入local目录
+cd /usr/local
+
+2.解压
+　　tar xzvf redis-4.0.8.tar.gz
+3.安装
+　　cd redis-4.0.8
+　　make
+　　cd src
+　　make install PREFIX=/usr/local/redis
+4.移动配置文件到安装目录下
+　　cd ../
+　　mkdir /usr/local/redis/etc
+　　mv redis.conf /usr/local/redis/etc
+ 5.配置redis为后台启动
+vim /usr/local/redis/etc/redis.conf 
+//将daemonize no 改成daemonize yes
+
+6.将redis加入到开机启动
+vim /etc/rc.local //在里面添加内容：
+/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf (意思就是开机调用这段开启redis的命令)
+
+7.开启redis
+/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis.conf 
+
+8.链接redis
+cd /usr/local/redis/bin/ 
+./redis-cli -h 127.0.0.1 -p 6379
+
+
+注意如果需开启外网访问,需更改redis端口,之后自行百度配置
+

@@ -1,0 +1,42 @@
+maven
+<!-- 验证全球手机号码jar包 -->
+		<dependency>
+	        <groupId>com.googlecode.libphonenumber</groupId>
+	        <artifactId>libphonenumber</artifactId>
+	        <version>7.0</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.googlecode.libphonenumber</groupId>
+	      <artifactId>carrier</artifactId>
+	      <version>1.11</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.googlecode.libphonenumber</groupId>
+	        <artifactId>geocoder</artifactId>
+	        <version>2.12</version>
+	    </dependency>
+
+jar包
+一个5块
+		
+java代码
+
+	private static PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+	/**
+     * 根据国家代码和手机号  判断手机号是否有效
+     * @param phoneNumber 手机号
+     * @param countryCode 国家手机代码 比如中国为86
+     * @return 如果验证成功则返回true,反之false
+     */
+    public static boolean checkPhoneNumber(String phoneNumber, String countryCode){
+
+        int ccode = Integer.parseInt(countryCode);//StringUtil.toInteger(countryCode);
+        long phone = Long.parseLong(phoneNumber);
+
+        PhoneNumber pn = new PhoneNumber();
+        pn.setCountryCode(ccode);
+        pn.setNationalNumber(phone);
+
+        return phoneNumberUtil.isValidNumber(pn);
+
+    }

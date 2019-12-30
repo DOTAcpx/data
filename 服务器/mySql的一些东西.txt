@@ -1,0 +1,60 @@
+例子
+SELECT ta.avatar,ta.nick,(cbAnchor.zbAnchor+cbAnchor.giftAnchor) totalIncome,cbAnchor.giftAnchor,cbAnchor.zbAnchor,ch.totalNumber,ch.receiveNumber,ch.totalTime,cbAnchor.sociatyIncome FROM (
+SELECT 
+SUM(CASE cbAnchor.type WHEN 6 THEN cbAnchor.amount ELSE 0 END) zbAnchor,
+SUM(CASE cbAnchor.type WHEN 1 THEN cbAnchor.amount ELSE 0 END) giftAnchor,
+( SUM(CASE cbUser.type WHEN 6 THEN cbUser.amount ELSE 0 END)  + SUM(CASE cbUser.type WHEN 1 THEN cbUser.amount ELSE 0 END) ) * 0.1 sociatyIncome,
+ cbAnchor.accountId
+ FROM cast_bill cbAnchor INNER JOIN cast_bill cbUser ON cbUser.ids = cbAnchor.ids AND cbAnchor.amount != cbUser.amount WHERE (cbAnchor.type = 1 OR cbAnchor.type = 6) AND cbAnchor.`amount` >= 0
+ GROUP BY cbAnchor.accountId
+) cbAnchor INNER JOIN tb_account ta ON ta.id = cbAnchor.accountId 
+ LEFT JOIN (
+ SELECT COUNT(id) totalNumber,SUM(CASE IFNULL(anchorPushUrl,'0') WHEN '0' THEN 0 ELSE 1 END) receiveNumber,(SUM(endTime)-SUM(CASE IFNULL(endTime,'0') WHEN '0' THEN 0 ELSE startTime END)) totalTime,toAccountId FROM cast_history GROUP BY toAccountId 
+) ch ON ch.toAccountId = ta.id
+
+SELECT SUM(CASE WHEN state =0 THEN 1 ELSE 0 END) AS state0,
+SUM(CASE WHEN state =2 THEN 1 ELSE 0 END) AS state1,
+SUM(CASE WHEN state =7 THEN 1 ELSE 0 END) AS state2
+ FROM shop_order WHERE accountId = 119
+
+如果cbAnchor.type的值为6则显示cbAnchor.amount,否则显示0
+(CASE cbAnchor.type WHEN 6 THEN cbAnchor.amount ELSE 0 END)
+//如果为空则显示0
+IFNULL(anchorPushUrl,'0')
+(CASE IFNULL(anchorPushUrl,'0') WHEN '0' THEN 0 ELSE 1 END)
+
+
+根据条件更新同一个字段设置不同的值
+
+UPDATE social_topic SET fz = (CASE WHEN createTime > '2018-04-13 13:00:27' THEN 2 ELSE 0 END )
+ WHERE userId = 57 AND fz != 1
+
+ 
+计算两个日期的时间差
+关键字:TIMESTAMPDIFF
+单位间隔类型有FRAC_SECOND 表示间隔是毫秒,SECOND 秒,MINUTE 分钟,HOUR 小时,DAY 天,WEEK 星期,MONTH 月,QUARTER 季度,YEAR 年
+NOW() - createTime 得出的结果转换为 单位
+TIMESTAMPDIFF(DAY,createTime,NOW())
+
+今天
+select * from 表名 where to_days(时间字段名) = to_days(now());
+
+昨天
+SELECT * FROM 表名 WHERE TO_DAYS( NOW( ) ) - TO_DAYS( 时间字段名) <= 1
+
+7天
+SELECT * FROM 表名 where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(时间字段名)
+
+近30天
+SELECT * FROM 表名 where DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date(时间字段名)
+
+本月
+SELECT * FROM 表名 WHERE DATE_FORMAT( 时间字段名, '%Y%m' ) = DATE_FORMAT( CURDATE( ) , '%Y%m' )
+
+上一月
+SELECT * FROM 表名 WHERE PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( 时间字段名, '%Y%m' ) ) =1
+
+设置链接数上限
+#SHOW VARIABLES LIKE 'max_connections';(查可以看当前的最大连接数)
+#SET GLOBAL max_connections=1000;(设置最大连接数为1000，可以再次查看是否设置成功)
+
